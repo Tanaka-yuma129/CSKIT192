@@ -1,0 +1,218 @@
+using UnityEngine;
+using TMPro;
+public class PlayerFlight : MonoBehaviour
+{
+    public float speed = 20f;
+    public PowerGauge powerGauge;
+    public float rotateSpeed = 60f;
+    public float gravity = 3f;
+    public TMP_Text successText;
+    public GameObject flyButton;
+    public GameObject powerGaugePanel;
+    public GameObject packagePrefab;
+
+    private bool packageDropped = false;
+
+    private Rigidbody2D rb;
+    private bool launched = false;
+    private bool landed = false;
+    private bool angleLocked = false;
+    private bool canAim = false;
+
+    public bool IsLaunched => launched || landed;
+    private float angle = 45f;
+    private float angleDirection = 1f;
+    private Vector3 startPosition;
+    private Quaternion checkpointRotation;
+    private GameObject currentPlanet;
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        startPosition = transform.position;
+        checkpointRotation = transform.rotation;
+        canAim = false;
+        rb.gravityScale = 0f;
+        rb.linearDamping = 0f;
+        rb.angularVelocity = 0f;
+        rb.linearVelocity = Vector2.zero;
+        if (successText != null)
+            successText.gameObject.SetActive(false);
+        if (flyButton != null)
+            flyButton.SetActive(false);
+        if (powerGaugePanel != null)
+            powerGaugePanel.SetActive(false);
+    }
+    void Update()
+    {
+        if (!canAim) return;
+       
+        if (!angleLocked)
+        {
+            angle += angleDirection * rotateSpeed * Time.deltaTime;
+            if (angle >= 155f)
+            {
+                angle = 155f;
+                angleDirection = -1f;
+
+            }
+            else if (angle <= 30f)
+            {
+                angle = 30f;
+                angleDirection = 1f;
+
+            }
+
+            transform.rotation =
+                Quaternion.Euler(0f, 0f, angle);
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // 飛行中なら配達物を落とす
+            if (launched)
+            {
+                DropPackage();
+                return;
+            }
+            if (!angleLocked)
+            {
+                // 角度を固定
+                angleLocked = true;
+                // パワーゲージをリセットして表示
+                if (powerGauge != null)
+                    powerGauge.ResetGauge();
+                if (powerGaugePanel != null)
+                    powerGaugePanel.SetActive(true);
+                return;
+            }
+            // 発射
+            launched = true;
+            if (powerGaugePanel != null)
+                powerGaugePanel.SetActive(false);
+            landed = false;
+            if (successText != null)
+                successText.gameObject.SetActive(false);
+            float radians = angle * Mathf.Deg2Rad;
+            Vector2 direction = new Vector2(
+                Mathf.Cos(radians),
+                Mathf.Sin(radians)
+            );
+            rb.gravityScale = gravity;
+            float power = powerGauge != null
+                ? powerGauge.LockPower()
+                : speed;
+            rb.linearVelocity = direction * power * 1.5f;
+        }
+    }
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!launched) return;
+        // 惑星以外との衝突は無視
+        if (!collision.gameObject.CompareTag("Earth") &&
+            !collision.gameObject.CompareTag("Planet"))
+        {
+            return;
+        }
+        // 直前に着地した惑星に当たったらリセット
+        if (collision.gameObject == currentPlanet)
+        {
+            ReturnToLaunch();
+            return;
+        }
+        // 新しい惑星への着地成功
+        currentPlanet = collision.gameObject;
+        launched = false;
+        landed = true;
+        angleLocked = false;
+        // 今回着地した場所を次のリセット地点にする
+        startPosition = transform.position;
+        checkpointRotation = transform.rotation;
+        // 配達員を停止
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.gravityScale = 0f;
+        if (powerGauge != null)
+            powerGauge.ResetGauge();
+        if (successText != null)
+            successText.gameObject.SetActive(true);
+        if (flyButton != null)
+            flyButton.SetActive(true);
+    }
+
+    void LateUpdate()
+
+    {
+
+        if (launched && transform.position.y < -10f)
+
+        {
+
+            ReturnToLaunch();
+            // カメラも初期位置に戻す
+            CameraFollow cameraFollow =
+                Camera.main != null
+                    ? Camera.main.GetComponent<CameraFollow>()
+                    : null;
+            if (cameraFollow != null)
+
+            {
+                cameraFollow.ResetCamera();
+            }
+        }
+    }
+
+    public void ReturnToLaunch()
+    {
+        launched = false;
+        packageDropped = false;
+        landed = false;
+        angleLocked = false;
+        transform.position = startPosition;
+        transform.rotation = checkpointRotation;
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.gravityScale = 0f;
+        angle = 45f;
+        angleDirection = 1f;
+        if (powerGauge != null)
+            powerGauge.ResetGauge();
+        if (successText != null)
+            successText.gameObject.SetActive(false);
+        if (flyButton != null)
+            flyButton.SetActive(false);
+    }
+    public void SetCanAim(bool value)
+    {
+        canAim = value;
+        Debug.Log("角度操作：" + canAim);
+    }
+
+    public void DropPackage()
+    {
+        if (!launched || packageDropped)
+            return;
+        if (packagePrefab == null)
+        {
+            Debug.LogWarning("Package Prefabが設定されていません！");
+            return;
+        }
+        Vector3 dropPosition = transform.position + Vector3.down * 0.5f;
+        GameObject package = Instantiate(
+            packagePrefab,
+            dropPosition,
+            Quaternion.identity
+        );
+        Rigidbody2D packageRb = package.GetComponent<Rigidbody2D>();
+        if (packageRb != null)
+        {
+            packageRb.gravityScale = 3f;
+            packageRb.linearVelocity = Vector2.zero;
+        }
+        Collider2D packageCollider = package.GetComponent<Collider2D>();
+        Collider2D playerCollider = GetComponent<Collider2D>();
+        if (packageCollider != null && playerCollider != null)
+        {
+            Physics2D.IgnoreCollision(packageCollider, playerCollider);
+        }
+        packageDropped = true;
+    }
+}
