@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 813368b3cf5117b40a3741498c151b7c
+=======
+guid: c42a7ad797c487943ae101ecc7a94fbe
+>>>>>>> 6f2904c3c0011bf0e2138cb7d8e7831cdcda4fb8
 timeCreated: 1484171296
 licenseType: Pro
 TextScriptImporter:
