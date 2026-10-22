@@ -117,4 +117,40 @@ public class DeliveryInventory : MonoBehaviour
                 "合計：" + TotalCount + " / " + maxItems;
         }
     }
+    public bool TryRemoveTomatoForDrop()
+    {
+        return TryRemoveForDrop("トマト");
+    }
+    public bool TryRemoveOrangeForDrop()
+    {
+        return TryRemoveForDrop("みかん");
+    }
+    public bool TryRemoveCabbageForDrop()
+    {
+        return TryRemoveForDrop("キャベツ");
+    }
+    private bool TryRemoveForDrop(string itemName)
+    {
+        switch (itemName)
+        {
+            case "トマト":
+                if (tomatoCount <= 0) return false;
+                tomatoCount--;
+                break;
+            case "みかん":
+                if (orangeCount <= 0) return false;
+                orangeCount--;
+                break;
+            case "キャベツ":
+                if (cabbageCount <= 0) return false;
+                cabbageCount--;
+                break;
+            default:
+                return false;
+        }
+        if (messageText != null)
+            messageText.text = itemName + "を落とした！";
+        UpdateDisplay();
+        return true;
+    }
 }
