@@ -30,6 +30,57 @@ public class DeliveryInventory : MonoBehaviour
     {
         AddItem("キャベツ");
     }
+    public void RemoveTomato()
+    {
+        RemoveItem("トマト");
+    }
+    public void RemoveOrange()
+    {
+        RemoveItem("みかん");
+    }
+    public void RemoveCabbage()
+    {
+        RemoveItem("キャベツ");
+    }
+    private void RemoveItem(string itemName)
+    {
+        switch (itemName)
+        {
+            case "トマト":
+                if (tomatoCount > 0)
+                    tomatoCount--;
+                else
+                {
+                    if (messageText != null)
+                        messageText.text = "トマトは0個です！";
+                    return;
+                }
+                break;
+            case "みかん":
+                if (orangeCount > 0)
+                    orangeCount--;
+                else
+                {
+                    if (messageText != null)
+                        messageText.text = "みかんは0個です！";
+                    return;
+                }
+                break;
+            case "キャベツ":
+                if (cabbageCount > 0)
+                    cabbageCount--;
+                else
+                {
+                    if (messageText != null)
+                        messageText.text = "キャベツは0個です！";
+                    return;
+                }
+                break;
+        }
+        if (messageText != null)
+            messageText.text = itemName + "を1個減らした！";
+        UpdateDisplay();
+    }
     private void AddItem(string itemName)
     {
         if (TotalCount >= maxItems)
