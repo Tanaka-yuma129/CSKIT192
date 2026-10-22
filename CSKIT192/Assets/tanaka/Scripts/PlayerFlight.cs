@@ -45,7 +45,6 @@ public class PlayerFlight : MonoBehaviour
     void Update()
     {
         if (!canAim) return;
-       
         if (!angleLocked)
         {
             angle += angleDirection * rotateSpeed * Time.deltaTime;
@@ -103,6 +102,7 @@ public class PlayerFlight : MonoBehaviour
             rb.linearVelocity = direction * power * 1.5f;
         }
     }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (!launched) return;

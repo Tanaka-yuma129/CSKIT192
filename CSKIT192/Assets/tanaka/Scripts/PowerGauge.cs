@@ -1,91 +1,73 @@
 using UnityEngine;
-
 using UnityEngine.UI;
-
+using TMPro;
 public class PowerGauge : MonoBehaviour
-
 {
-
     public Image powerBarFill;
-
-    public float maxPower = 30f;
-
-    public float changeSpeed = 30f;
-
-    public float Power { get; private set; }
-
-    private bool locked = false;
-
+    public TMP_Text powerText;
+    public float minPower = 1f;
+    public float maxPower = 60f;
+    public float changeSpeed = 45f;
+    private float currentPower = 1f;
     private float direction = 1f;
-   void Start()
+    private bool isRunning = false;
+    private float maxWidth;
+    void Start()
     {
-        ResetGauge(); 
+        if (powerBarFill != null)
+        {
+            maxWidth = powerBarFill.rectTransform.sizeDelta.x;
+        }
+        UpdateDisplay();
     }
     void Update()
-
     {
-
-        if (locked) return;
-
-        Power += direction * changeSpeed * Time.deltaTime;
-
-        if (Power >= maxPower)
-
+        if (!isRunning) return;
+        currentPower += direction * changeSpeed * Time.deltaTime;
+        if (currentPower >= maxPower)
         {
-
-            Power = maxPower;
-
+            currentPower = maxPower;
             direction = -1f;
-
         }
-
-        else if (Power <= 0f)
-
+        else if (currentPower <= minPower)
         {
-
-            Power = 0f;
-
+            currentPower = minPower;
             direction = 1f;
-
         }
-
-        if (powerBarFill != null)
-
-        {
-
-            powerBarFill.fillAmount = Power / maxPower;
-
-        }
-
-    }
-
-    public float LockPower()
-
-    {
-
-        locked = true;
-
-        return Power;
-
+        UpdateDisplay();
     }
     public void ResetGauge()
-
     {
-
-        Power = 0f;
-
+        currentPower = minPower;
         direction = 1f;
-
-        locked = false;
-
-        if (powerBarFill != null)
-
-        {
-
-            powerBarFill.fillAmount = 0f;
-
-        }
-
+        isRunning = true;
+        UpdateDisplay();
     }
-
+    public float LockPower()
+    {
+        isRunning = false;
+        UpdateDisplay();
+        return currentPower;
+    }
+    public void StopGauge()
+    {
+        isRunning = false;
+    }
+    void UpdateDisplay()
+    {
+        if (powerBarFill != null)
+        {
+            float ratio = Mathf.InverseLerp(
+                minPower, maxPower, currentPower
+            );
+            Vector2 size = powerBarFill.rectTransform.sizeDelta;
+            size.x = maxWidth * ratio;
+            powerBarFill.rectTransform.sizeDelta = size;
+        }
+        if (powerText != null)
+        {
+            powerText.text =
+                Mathf.RoundToInt(currentPower).ToString();
+        }
+    }
 }
