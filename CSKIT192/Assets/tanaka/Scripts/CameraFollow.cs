@@ -26,6 +26,15 @@ public class CameraFollow : MonoBehaviour
     }
     public void ResetCamera()
     {
-        transform.position = startPosition;
+        if (target == null)
+            return;
+        // 主人公の位置をカメラの中心にする
+        transform.position = new Vector3(
+            target.position.x + offset.x,
+            target.position.y + offset.y,
+            offset.z
+        );
+        // カメラの開始位置も更新する
+        startPosition = transform.position;
     }
 }
