@@ -6,17 +6,24 @@ using UnityEngine.SceneManagement;
 public class KY_GameTimer : MonoBehaviour
 {
     public TextMeshProUGUI TimerText; //タイマー用テキスト
-    [SerializeField]private float gametimer = 120f; //ゲーム時間(秒)
+    float gametimer; //ゲーム時間(秒)
 
-    // Update is called once per frame
+    void Start()
+    {
+        if (KY_GameManager.Instance != null)
+        {
+            gametimer = KY_GameManager.Instance.gametime;
+        }
+    }
     void Update()
     {
-        //ゲーム時間のカウントダウン
-        if (gametimer > 0)
+        if (KY_GameManager.Instance != null)
         {
-            gametimer -= Time.deltaTime;
+            gametimer = KY_GameManager.Instance.gametime;
         }
-        else
+
+        //ゲーム時間のカウントダウン
+        if (gametimer <= 0)
         {
             gametimer = 0;
             SceneManager.LoadScene("ResultScene"); //シーン指定:ResultScene

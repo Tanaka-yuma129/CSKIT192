@@ -7,6 +7,7 @@ public class KY_Camera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //–îˆóƒL[‚ª‰Ÿ‚³‚ê‚½
         float h = Input.GetAxisRaw("Horizontal");
 
 
