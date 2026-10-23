@@ -11,7 +11,9 @@ public class SelectionMenu : MonoBehaviour
     public GameObject deliveryPersonObject;
     public GameObject[] flightObjects;
     public GameObject[] selectionButtons;
+    public GameObject returnToEarthButton;
     public GameObject flyButton;
+    public GameObject selectedItemTextObject;
     public PlayerFlight playerFlight;
     public bool IsFlightScreen { get; private set; }
     void Start()
@@ -43,6 +45,12 @@ public class SelectionMenu : MonoBehaviour
             earthObject.SetActive(true);
         if (deliveryPersonObject != null)
             deliveryPersonObject.SetActive(true);
+        if (selectedItemTextObject != null)
+            selectedItemTextObject.SetActive(false);
+        if (returnToEarthButton != null)
+            returnToEarthButton.SetActive(false);
+
+
     }
     // 飛行画面
     public void ShowFlight()
@@ -63,6 +71,13 @@ public class SelectionMenu : MonoBehaviour
         }
         if (flyButton != null)
             flyButton.SetActive(false);
+        if (selectedItemTextObject != null)
+            selectedItemTextObject.SetActive(true);
+        if (returnToEarthButton != null)
+            returnToEarthButton.SetActive(true);
+
+
+
         SetFlightObjects(true);
         SetSelectionButtons(false);
     }
@@ -155,5 +170,11 @@ public class SelectionMenu : MonoBehaviour
             if (obj != null)
                 obj.SetActive(visible);
         }
+    }
+    // 配達員が飛び立ったら戻るボタンを消す
+    public void HideReturnButton()
+    {
+        if (returnToEarthButton != null)
+            returnToEarthButton.SetActive(false);
     }
 }
