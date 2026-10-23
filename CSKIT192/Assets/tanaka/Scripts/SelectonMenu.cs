@@ -6,6 +6,9 @@ public class SelectionMenu : MonoBehaviour
     public GameObject flightPanel;
     public GameObject deliveryPersonPanel;
     public GameObject factoryPanel;
+    public GameObject deliveryItemPanel;
+    public GameObject earthObject;
+    public GameObject deliveryPersonObject;
     public GameObject[] flightObjects;
     public GameObject[] selectionButtons;
     public GameObject flyButton;
@@ -33,6 +36,13 @@ public class SelectionMenu : MonoBehaviour
             flyButton.SetActive(true);
         SetFlightObjects(false);
         SetSelectionButtons(true);
+
+        if (deliveryItemPanel != null)
+            deliveryItemPanel.SetActive(false);
+        if (earthObject != null)
+            earthObject.SetActive(true);
+        if (deliveryPersonObject != null)
+            deliveryPersonObject.SetActive(true);
     }
     // 飛行画面
     public void ShowFlight()
@@ -56,23 +66,6 @@ public class SelectionMenu : MonoBehaviour
         SetFlightObjects(true);
         SetSelectionButtons(false);
     }
-    // 配達員選択画面
-    public void ShowDeliveryPerson()
-    {
-        IsFlightScreen = false;
-        if (playerFlight != null)
-            playerFlight.SetCanAim(false);
-        if (selectionPanel != null)
-            selectionPanel.SetActive(false);
-        if (flightPanel != null)
-            flightPanel.SetActive(false);
-        if (deliveryPersonPanel != null)
-            deliveryPersonPanel.SetActive(true);
-        if (factoryPanel != null)
-            factoryPanel.SetActive(false);
-        SetFlightObjects(false);
-        SetSelectionButtons(false);
-    }
     // 工場選択画面
     public void ShowFactory()
     {
@@ -89,6 +82,60 @@ public class SelectionMenu : MonoBehaviour
             factoryPanel.SetActive(true);
         SetFlightObjects(false);
         SetSelectionButtons(false);
+    }
+    // 配達物選択画面
+    public void ShowDeliveryItem()
+    {
+        IsFlightScreen = false;
+        if (playerFlight != null)
+            playerFlight.SetCanAim(false);
+        if (selectionPanel != null)
+            selectionPanel.SetActive(false);
+        if (flightPanel != null)
+            flightPanel.SetActive(false);
+        if (deliveryPersonPanel != null)
+            deliveryPersonPanel.SetActive(false);
+        if (factoryPanel != null)
+            factoryPanel.SetActive(false);
+        if (deliveryItemPanel != null)
+            deliveryItemPanel.SetActive(true);
+        if (earthObject != null)
+            earthObject.SetActive(false);
+        if (deliveryPersonObject != null)
+            deliveryPersonObject.SetActive(false);
+        if (flyButton != null)
+            flyButton.SetActive(false);
+        SetFlightObjects(false);
+        SetSelectionButtons(false);
+        if (deliveryItemPanel != null)
+
+            deliveryItemPanel.SetActive(true);
+
+        if (deliveryItemPanel != null)
+
+        {
+
+            Transform backButton =
+
+                deliveryItemPanel.transform.Find("BackToEarthButton");
+
+            if (backButton != null)
+
+                backButton.gameObject.SetActive(true);
+
+        }
+
+    }
+    // 地球画面に戻る
+    public void ReturnToEarthScreen()
+    {
+        ShowSelection();
+        if (deliveryItemPanel != null)
+            deliveryItemPanel.SetActive(false);
+        if (earthObject != null)
+            earthObject.SetActive(true);
+        if (deliveryPersonObject != null)
+            deliveryPersonObject.SetActive(true);
     }
     // 飛行に使うオブジェクトの表示・非表示
     void SetFlightObjects(bool visible)
