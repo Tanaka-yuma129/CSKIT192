@@ -19,7 +19,7 @@ public class KY_TitleSceneChange : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return) && !isTransitioning)
         {
             StartCoroutine(TransitionSequence());
         }
