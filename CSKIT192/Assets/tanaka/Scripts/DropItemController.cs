@@ -12,23 +12,27 @@ public class DropItemController : MonoBehaviour
     public float dropSpeed = 3f;
     // 0 = トマト、1 = みかん、2 = キャベツ
     private int selectedIndex = 0;
+    private static int savedSelectedIndex = 0;
+
     void Start()
     {
+        selectedIndex = savedSelectedIndex;
         UpdateSelectedItemText();
     }
     void Update()
     {
-        // 配達員が飛行中だけ操作できる
-        if (playerFlight == null || !playerFlight.IsLaunched)
+        if (playerFlight == null)
             return;
-        // Qキーで落とす野菜を切り替える
+        // 飛行画面に入っていればQキーで野菜を切り替える
         if (Input.GetKeyDown(KeyCode.Q))
         {
             selectedIndex = (selectedIndex + 1) % 3;
+            savedSelectedIndex = selectedIndex;
             UpdateSelectedItemText();
         }
-        // Spaceキーで選択中の野菜を落とす
-        if (Input.GetKeyDown(KeyCode.Space))
+        // 打ち上げ後だけSpaceキーで野菜を落とす
+        if (playerFlight.IsLaunched &&
+            Input.GetKeyDown(KeyCode.Space))
         {
             DropSelectedItem();
         }
@@ -87,6 +91,14 @@ public class DropItemController : MonoBehaviour
             spawnPosition,
             Quaternion.identity
         );
+        Debug.Log(
+    "野菜名：" + dropped.name +
+    " / activeSelf：" + dropped.activeSelf +
+    " / activeInHierarchy：" + dropped.activeInHierarchy +
+    " / 親：" + (dropped.transform.parent == null
+        ? "なし"
+        : dropped.transform.parent.name)
+ );
         Rigidbody2D rb = dropped.GetComponent<Rigidbody2D>();
         if (rb != null)
         {

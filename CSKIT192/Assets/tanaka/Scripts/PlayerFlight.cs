@@ -6,10 +6,21 @@ public class PlayerFlight : MonoBehaviour
     public PowerGauge powerGauge;
     public float rotateSpeed = 60f;
     public float gravity = 3f;
+    public LineRenderer aimArrow;
+
+    public float arrowLength = 2f;
+
+    public float arrowHeadLength = 0.4f;
+
+    public float arrowHeadAngle = 25f;
+
+    public float angleChangeSpeed = 0.5f;
+
     public TMP_Text successText;
     public GameObject flyButton;
     public GameObject powerGaugePanel;
     public GameObject packagePrefab;
+    public SelectionMenu selectionMenu;
 
     private bool packageDropped = false;
 
@@ -63,13 +74,35 @@ public class PlayerFlight : MonoBehaviour
 
             transform.rotation =
                 Quaternion.Euler(0f, 0f, angle);
+            if (aimArrow != null && !launched && !landed)
+            {
+                Vector3 start = transform.position;
+                float radians = angle * Mathf.Deg2Rad;
+                Vector3 direction = new Vector3(
+                    Mathf.Cos(radians),
+                    Mathf.Sin(radians),
+                    0f
+                );
+                Vector3 tip = start + direction * arrowLength;
+                Vector3 left = tip -
+                    Quaternion.Euler(0f, 0f, arrowHeadAngle)
+                    * direction * arrowHeadLength;
+                Vector3 right = tip -
+                    Quaternion.Euler(0f, 0f, -arrowHeadAngle)
+                    * direction * arrowHeadLength;
+                aimArrow.positionCount = 5;
+                aimArrow.SetPosition(0, start);
+                aimArrow.SetPosition(1, tip);
+                aimArrow.SetPosition(2, left);
+                aimArrow.SetPosition(3, tip);
+                aimArrow.SetPosition(4, right);
+            }
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             // 飛行中なら配達物を落とす
             if (launched)
             {
-                DropPackage();
                 return;
             }
             if (!angleLocked)
@@ -100,6 +133,8 @@ public class PlayerFlight : MonoBehaviour
                 ? powerGauge.LockPower()
                 : speed;
             rb.linearVelocity = direction * power * 1.5f;
+            if (selectionMenu != null)
+                selectionMenu.HideReturnButton();
         }
     }
 
@@ -136,6 +171,26 @@ public class PlayerFlight : MonoBehaviour
             successText.gameObject.SetActive(true);
         if (flyButton != null)
             flyButton.SetActive(true);
+        // 地球に着地したときだけ画面を戻す
+        // 地球に着地したときだけ画面を戻す
+        if (collision.gameObject.CompareTag("Earth"))
+        {
+            launched = false;
+            landed = true;
+            angleLocked = false;
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.gravityScale = 0f;
+            if (powerGauge != null)
+                powerGauge.ResetGauge();
+            if (successText != null)
+                successText.gameObject.SetActive(false);
+            if (flyButton != null)
+                flyButton.SetActive(false);
+            if (selectionMenu != null)
+                selectionMenu.ReturnToEarthScreen();
+            return;
+        }
     }
 
     void LateUpdate()
