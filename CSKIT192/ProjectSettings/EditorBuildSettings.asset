@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/kojima/Scenes/CreditScene.unity
     guid: 28843edd33e321a4485db5e90e086fe7
+  - enabled: 1
+    path: Assets/kojima/Scenes/MapScene.unity
+    guid: a40618109fdc4134b99ff2d3eb8fde78
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
