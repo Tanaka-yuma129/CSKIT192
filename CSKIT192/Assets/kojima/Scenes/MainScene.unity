@@ -557,6 +557,7 @@ GameObject:
   m_Component:
   - component: {fileID: 394828423}
   - component: {fileID: 394828422}
+  - component: {fileID: 394828424}
   m_Layer: 0
   m_Name: MapChang
   m_TagString: Untagged
@@ -593,6 +594,20 @@ Transform:
   - {fileID: 798272033}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &394828424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394828421}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dcfab5938b1f044fb9746d0a6f2c32f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gametime: 120
+  tip: 0
 --- !u!1 &424755493 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9031366454199795626, guid: e7d8345ba3dad3a448a9e9c563865eaf, type: 3}
@@ -2362,6 +2377,9 @@ MonoBehaviour:
   flightPanel: {fileID: 619394800}
   deliveryPersonPanel: {fileID: 0}
   factoryPanel: {fileID: 0}
+  deliveryItemPanel: {fileID: 0}
+  earthObject: {fileID: 0}
+  deliveryPersonObject: {fileID: 0}
   flightObjects:
   - {fileID: 0}
   - {fileID: 0}
@@ -3019,7 +3037,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TimerText: {fileID: 1469623106}
-  gametimer: 30
 --- !u!1 &1522508969 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5105256276112376098, guid: d8b89899165e80743a35f1d2f7d13d4f, type: 3}
