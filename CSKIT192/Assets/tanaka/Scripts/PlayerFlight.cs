@@ -31,6 +31,7 @@ public class PlayerFlight : MonoBehaviour
     private bool canAim = false;
 
     public bool IsLaunched => launched || landed;
+    public bool IsFlying => launched;
     private float angle = 45f;
     private float angleDirection = 1f;
     private Vector3 startPosition;
