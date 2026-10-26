@@ -77,7 +77,6 @@ public class SelectionMenu : MonoBehaviour
             returnToEarthButton.SetActive(true);
 
 
-
         SetFlightObjects(true);
         SetSelectionButtons(false);
     }

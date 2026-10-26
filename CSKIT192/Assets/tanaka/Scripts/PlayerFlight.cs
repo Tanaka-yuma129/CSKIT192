@@ -74,29 +74,6 @@ public class PlayerFlight : MonoBehaviour
 
             transform.rotation =
                 Quaternion.Euler(0f, 0f, angle);
-            if (aimArrow != null && !launched && !landed)
-            {
-                Vector3 start = transform.position;
-                float radians = angle * Mathf.Deg2Rad;
-                Vector3 direction = new Vector3(
-                    Mathf.Cos(radians),
-                    Mathf.Sin(radians),
-                    0f
-                );
-                Vector3 tip = start + direction * arrowLength;
-                Vector3 left = tip -
-                    Quaternion.Euler(0f, 0f, arrowHeadAngle)
-                    * direction * arrowHeadLength;
-                Vector3 right = tip -
-                    Quaternion.Euler(0f, 0f, -arrowHeadAngle)
-                    * direction * arrowHeadLength;
-                aimArrow.positionCount = 5;
-                aimArrow.SetPosition(0, start);
-                aimArrow.SetPosition(1, tip);
-                aimArrow.SetPosition(2, left);
-                aimArrow.SetPosition(3, tip);
-                aimArrow.SetPosition(4, right);
-            }
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
