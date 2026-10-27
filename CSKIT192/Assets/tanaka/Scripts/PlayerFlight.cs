@@ -40,9 +40,6 @@ public class PlayerFlight : MonoBehaviour
     public TMP_Text scoreText;
     public int scorePerLanding = 100;
     private int score = 0;
-    public ItemSlotUI itemSlotUI;
-    public DeliveryManager deliveryManager;
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
