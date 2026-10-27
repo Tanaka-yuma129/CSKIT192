@@ -91,14 +91,6 @@ public class DropItemController : MonoBehaviour
             spawnPosition,
             Quaternion.identity
         );
-        Debug.Log(
-    "野菜名：" + dropped.name +
-    " / activeSelf：" + dropped.activeSelf +
-    " / activeInHierarchy：" + dropped.activeInHierarchy +
-    " / 親：" + (dropped.transform.parent == null
-        ? "なし"
-        : dropped.transform.parent.name)
- );
         Rigidbody2D rb = dropped.GetComponent<Rigidbody2D>();
         if (rb != null)
         {

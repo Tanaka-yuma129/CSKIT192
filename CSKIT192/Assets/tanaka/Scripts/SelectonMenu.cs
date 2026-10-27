@@ -77,7 +77,6 @@ public class SelectionMenu : MonoBehaviour
             returnToEarthButton.SetActive(true);
 
 
-
         SetFlightObjects(true);
         SetSelectionButtons(false);
     }
@@ -85,6 +84,8 @@ public class SelectionMenu : MonoBehaviour
     public void ShowFactory()
     {
         IsFlightScreen = false;
+        if (selectedItemTextObject != null)
+            selectedItemTextObject.SetActive(false);
         if (playerFlight != null)
             playerFlight.SetCanAim(false);
         if (selectionPanel != null)
@@ -102,6 +103,8 @@ public class SelectionMenu : MonoBehaviour
     public void ShowDeliveryItem()
     {
         IsFlightScreen = false;
+        if (selectedItemTextObject != null)
+            selectedItemTextObject.SetActive(false);
         if (playerFlight != null)
             playerFlight.SetCanAim(false);
         if (selectionPanel != null)
