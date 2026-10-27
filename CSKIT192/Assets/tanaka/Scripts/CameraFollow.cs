@@ -5,36 +5,65 @@ public class CameraFollow : MonoBehaviour
     public PlayerFlight playerFlight;
     public float smoothSpeed = 5f;
     public Vector3 offset = new Vector3(0f, 0f, -10f);
+    [Header("背景の移動制限")]
+    public Transform backgroundRoot;
     private Vector3 startPosition;
+    private Camera cam;
     void Start()
     {
         startPosition = transform.position;
+        cam = GetComponent<Camera>();
     }
     void LateUpdate()
     {
-        // 配達員が発射された後だけ追いかける
         if (playerFlight == null || !playerFlight.IsLaunched)
             return;
-        if (target == null)
+        if (target == null || cam == null || backgroundRoot == null)
             return;
         Vector3 targetPosition = target.position + offset;
+        // 背景全体の左右端を取得
+        SpriteRenderer[] sprites =
+            backgroundRoot.GetComponentsInChildren<SpriteRenderer>(true);
+        if (sprites.Length == 0)
+            return;
+        Bounds bounds = sprites[0].bounds;
+        foreach (SpriteRenderer sprite in sprites)
+        {
+            bounds.Encapsulate(sprite.bounds);
+        }
+        // カメラの横幅を考慮して、背景の外を映さない
+        float halfWidth = cam.orthographicSize * cam.aspect;
+        float minX = bounds.min.x + halfWidth;
+        float maxX = bounds.max.x - halfWidth;
+        if (minX > maxX)
+            targetPosition.x = bounds.center.x;
+        else
+            targetPosition.x = Mathf.Clamp(
+                targetPosition.x, minX, maxX
+            );
+        // 縦方向は今まで通り追従
         transform.position = Vector3.Lerp(
             transform.position,
             targetPosition,
             smoothSpeed * Time.deltaTime
         );
+        // 追従中も左右の範囲から出ないようにする
+        Vector3 pos = transform.position;
+        if (minX > maxX)
+            pos.x = bounds.center.x;
+        else
+            pos.x = Mathf.Clamp(pos.x, minX, maxX);
+        transform.position = pos;
     }
     public void ResetCamera()
     {
         if (target == null)
             return;
-        // 主人公の位置をカメラの中心にする
         transform.position = new Vector3(
             target.position.x + offset.x,
             target.position.y + offset.y,
             offset.z
         );
-        // カメラの開始位置も更新する
         startPosition = transform.position;
     }
 }

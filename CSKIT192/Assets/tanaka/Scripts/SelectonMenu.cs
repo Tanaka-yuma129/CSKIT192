@@ -15,6 +15,9 @@ public class SelectionMenu : MonoBehaviour
     public GameObject flyButton;
     public GameObject selectedItemTextObject;
     public PlayerFlight playerFlight;
+    public GameObject earthBackground;
+    public GameObject flightBackground;
+
     public bool IsFlightScreen { get; private set; }
     void Start()
     {
@@ -49,6 +52,11 @@ public class SelectionMenu : MonoBehaviour
             selectedItemTextObject.SetActive(false);
         if (returnToEarthButton != null)
             returnToEarthButton.SetActive(false);
+        if (earthBackground != null)
+            earthBackground.SetActive(true);
+        if (flightBackground != null)
+            flightBackground.SetActive(false);
+
 
 
     }
@@ -75,6 +83,10 @@ public class SelectionMenu : MonoBehaviour
             selectedItemTextObject.SetActive(true);
         if (returnToEarthButton != null)
             returnToEarthButton.SetActive(true);
+        if (earthBackground != null)
+            earthBackground.SetActive(false);
+        if (flightBackground != null)
+            flightBackground.SetActive(true);
 
 
         SetFlightObjects(true);

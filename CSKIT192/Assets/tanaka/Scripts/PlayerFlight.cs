@@ -37,6 +37,12 @@ public class PlayerFlight : MonoBehaviour
     private Vector3 startPosition;
     private Quaternion checkpointRotation;
     private GameObject currentPlanet;
+    public TMP_Text scoreText;
+    public int scorePerLanding = 100;
+    private int score = 0;
+    public ItemSlotUI itemSlotUI;
+    public DeliveryManager deliveryManager;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -53,9 +59,16 @@ public class PlayerFlight : MonoBehaviour
             flyButton.SetActive(false);
         if (powerGaugePanel != null)
             powerGaugePanel.SetActive(false);
+        if (aimArrow != null)
+        {
+            aimArrow.positionCount = 4;
+            aimArrow.enabled = false;
+        }
+
     }
     void Update()
     {
+        UpdateAimArrow();
         if (!canAim) return;
         if (!angleLocked)
         {
@@ -115,10 +128,48 @@ public class PlayerFlight : MonoBehaviour
                 selectionMenu.HideReturnButton();
         }
     }
+    void UpdateAimArrow()
+    {
+        if (aimArrow == null) return;
+        if (!canAim || launched )
+        {
+            aimArrow.enabled = false;
+            return;
+        }
+        aimArrow.enabled = true;
+        Vector3 start = transform.position;
+        float radians = angle * Mathf.Deg2Rad;
+        Vector2 direction = new Vector2(
+            Mathf.Cos(radians),
+            Mathf.Sin(radians)
+        );
+        Vector3 tip = start + (Vector3)(direction * arrowLength);
+        float leftAngle = (angle + 180f - arrowHeadAngle)
+            * Mathf.Deg2Rad;
+        float rightAngle = (angle + 180f + arrowHeadAngle)
+            * Mathf.Deg2Rad;
+        Vector3 left = tip + new Vector3(
+            Mathf.Cos(leftAngle),
+            Mathf.Sin(leftAngle),
+            0f
+        ) * arrowHeadLength;
+        Vector3 right = tip + new Vector3(
+            Mathf.Cos(rightAngle),
+            Mathf.Sin(rightAngle),
+            0f
+        ) * arrowHeadLength;
+        aimArrow.positionCount = 4;
+        aimArrow.SetPosition(0, start);
+        aimArrow.SetPosition(1, tip);
+        aimArrow.SetPosition(2, left);
+        aimArrow.SetPosition(3, tip);
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (!launched) return;
+        Debug.Log("衝突相手：" + collision.gameObject.name
+   + " / Tag：" + collision.gameObject.tag);
         // 惑星以外との衝突は無視
         if (!collision.gameObject.CompareTag("Earth") &&
             !collision.gameObject.CompareTag("Planet"))
@@ -131,6 +182,7 @@ public class PlayerFlight : MonoBehaviour
             ReturnToLaunch();
             return;
         }
+    
         // 新しい惑星への着地成功
         currentPlanet = collision.gameObject;
         launched = false;
@@ -153,6 +205,8 @@ public class PlayerFlight : MonoBehaviour
         // 地球に着地したときだけ画面を戻す
         if (collision.gameObject.CompareTag("Earth"))
         {
+
+            Debug.Log("地球に着地！地球画面に戻します");
             launched = false;
             landed = true;
             angleLocked = false;
@@ -169,6 +223,7 @@ public class PlayerFlight : MonoBehaviour
                 selectionMenu.ReturnToEarthScreen();
             return;
         }
+  
     }
 
     void LateUpdate()
@@ -248,4 +303,13 @@ public class PlayerFlight : MonoBehaviour
         }
         packageDropped = true;
     }
+    void UpdateScoreText()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = "スコア：" + score + "点";
+        }
+
+    }
+
 }

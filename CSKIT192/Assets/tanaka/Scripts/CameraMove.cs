@@ -3,29 +3,50 @@ public class CameraMove : MonoBehaviour
 {
     public float moveSpeed = 10f;
     public SelectionMenu selectionMenu;
-    private Vector3 startPosition;
+    public Transform backgroundRoot;
+    private Camera cam;
     void Start()
     {
-        startPosition = transform.position;
+        cam = GetComponent<Camera>();
     }
     void Update()
     {
-        // 飛行画面以外ではカメラを動かさない
         if (selectionMenu == null ||
             !selectionMenu.IsFlightScreen)
         {
             return;
         }
+        if (backgroundRoot == null || cam == null)
+            return;
         float move = 0f;
         if (Input.GetKey(KeyCode.A))
-        {
             move = -1f;
-        }
         if (Input.GetKey(KeyCode.D))
-        {
             move = 1f;
+        // 背景全体の左右端を取得
+        SpriteRenderer[] sprites =
+            backgroundRoot.GetComponentsInChildren<SpriteRenderer>(true);
+        if (sprites.Length == 0)
+            return;
+        Bounds bounds = sprites[0].bounds;
+        foreach (SpriteRenderer sprite in sprites)
+        {
+            bounds.Encapsulate(sprite.bounds);
         }
-        transform.position +=
-            Vector3.right * move * moveSpeed * Time.deltaTime;
+        // カメラの横幅を考慮する
+        float halfWidth = cam.orthographicSize * cam.aspect;
+        float minX = bounds.min.x + halfWidth;
+        float maxX = bounds.max.x - halfWidth;
+        if (minX > maxX)
+            return;
+        // 移動先を背景の範囲内に制限
+        float nextX = transform.position.x
+            + move * moveSpeed * Time.deltaTime;
+        nextX = Mathf.Clamp(nextX, minX, maxX);
+        transform.position = new Vector3(
+            nextX,
+            transform.position.y,
+            transform.position.z
+        );
     }
 }
