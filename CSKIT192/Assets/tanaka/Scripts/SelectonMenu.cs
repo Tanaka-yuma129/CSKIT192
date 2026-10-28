@@ -15,6 +15,11 @@ public class SelectionMenu : MonoBehaviour
     public GameObject flyButton;
     public GameObject selectedItemTextObject;
     public PlayerFlight playerFlight;
+    public GameObject earthBackground;
+    public GameObject flightBackground;
+    public PlanetOrderManager planetOrderManager;
+
+
     public bool IsFlightScreen { get; private set; }
     void Start()
     {
@@ -49,8 +54,19 @@ public class SelectionMenu : MonoBehaviour
             selectedItemTextObject.SetActive(false);
         if (returnToEarthButton != null)
             returnToEarthButton.SetActive(false);
+        if (earthBackground != null)
+            earthBackground.SetActive(true);
+        if (flightBackground != null)
+            flightBackground.SetActive(false);
 
-
+    }
+    // 地球に着地したときだけ注文をリセットする
+    public void ResetPlanetOrdersOnEarthLanding()
+    {
+        if (planetOrderManager != null)
+        {
+            planetOrderManager.RandomizeAllOrders();
+        }
     }
     // 飛行画面
     public void ShowFlight()
@@ -75,7 +91,10 @@ public class SelectionMenu : MonoBehaviour
             selectedItemTextObject.SetActive(true);
         if (returnToEarthButton != null)
             returnToEarthButton.SetActive(true);
-
+        if (earthBackground != null)
+            earthBackground.SetActive(false);
+        if (flightBackground != null)
+            flightBackground.SetActive(true);
 
 
         SetFlightObjects(true);
@@ -85,6 +104,8 @@ public class SelectionMenu : MonoBehaviour
     public void ShowFactory()
     {
         IsFlightScreen = false;
+        if (selectedItemTextObject != null)
+            selectedItemTextObject.SetActive(false);
         if (playerFlight != null)
             playerFlight.SetCanAim(false);
         if (selectionPanel != null)
@@ -102,6 +123,8 @@ public class SelectionMenu : MonoBehaviour
     public void ShowDeliveryItem()
     {
         IsFlightScreen = false;
+        if (selectedItemTextObject != null)
+            selectedItemTextObject.SetActive(false);
         if (playerFlight != null)
             playerFlight.SetCanAim(false);
         if (selectionPanel != null)
@@ -144,6 +167,7 @@ public class SelectionMenu : MonoBehaviour
     // 地球画面に戻る
     public void ReturnToEarthScreen()
     {
+   
         ShowSelection();
         if (deliveryItemPanel != null)
             deliveryItemPanel.SetActive(false);

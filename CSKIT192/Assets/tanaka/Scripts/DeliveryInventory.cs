@@ -42,6 +42,36 @@ public class DeliveryInventory : MonoBehaviour
     {
         RemoveItem("キャベツ");
     }
+    // スロー機能のために野菜を1個消費する
+    public bool TryConsumeOneForSlow()
+    {
+        if (tomatoCount > 0)
+        {
+            tomatoCount--;
+            if (messageText != null)
+                messageText.text = "トマトを1個食べた！";
+        }
+        else if (orangeCount > 0)
+        {
+            orangeCount--;
+            if (messageText != null)
+                messageText.text = "みかんを1個食べた！";
+        }
+        else if (cabbageCount > 0)
+        {
+            cabbageCount--;
+            if (messageText != null)
+                messageText.text = "キャベツを1個食べた！";
+        }
+        else
+        {
+            if (messageText != null)
+                messageText.text = "食べられる配達物がありません！";
+            return false;
+        }
+        UpdateDisplay();
+        return true;
+    }
     private void RemoveItem(string itemName)
     {
         switch (itemName)
@@ -150,6 +180,58 @@ public class DeliveryInventory : MonoBehaviour
         }
         if (messageText != null)
             messageText.text = itemName + "を落とした！";
+        UpdateDisplay();
+        return true;
+    }
+    // 配達失敗時に野菜をインベントリへ戻す
+    public void ReturnItem(string itemName)
+    {
+        switch (itemName)
+        {
+            case "トマト":
+                tomatoCount++;
+                break;
+            case "みかん":
+                orangeCount++;
+                break;
+            case "キャベツ":
+                cabbageCount++;
+                break;
+            default:
+                Debug.LogWarning("戻す野菜の名前が不明です: " + itemName);
+                return;
+        }
+        UpdateDisplay();
+        if (messageText != null)
+            messageText.text = itemName + "がインベントリに戻った！";
+    }
+    // 指定した野菜の所持数を調べる
+    public int GetItemCount(string itemName)
+    {
+        switch (itemName)
+        {
+            case "トマト":
+                return tomatoCount;
+            case "みかん":
+                return orangeCount;
+            case "キャベツ":
+                return cabbageCount;
+            default:
+                return 0;
+        }
+    }
+    // 配達成功時に必要な個数を減らす
+    public bool TryRemoveItems(string itemName, int count)
+    {
+        if (count <= 0) return false;
+        if (GetItemCount(itemName) < count)
+            return false;
+        for (int i = 0; i < count; i++)
+        {
+            bool removed = TryRemoveForDrop(itemName);
+            if (!removed)
+                return false;
+        }
         UpdateDisplay();
         return true;
     }

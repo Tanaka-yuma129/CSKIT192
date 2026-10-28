@@ -21,6 +21,8 @@ public class PlayerFlight : MonoBehaviour
     public GameObject powerGaugePanel;
     public GameObject packagePrefab;
     public SelectionMenu selectionMenu;
+    public PlanetOrderManager planetOrderManager;
+
 
     private bool packageDropped = false;
 
@@ -31,11 +33,27 @@ public class PlayerFlight : MonoBehaviour
     private bool canAim = false;
 
     public bool IsLaunched => launched || landed;
+    public bool IsFlying => launched;
     private float angle = 45f;
     private float angleDirection = 1f;
     private Vector3 startPosition;
     private Quaternion checkpointRotation;
     private GameObject currentPlanet;
+    public TMP_Text scoreText;
+    public DeliveryScoreCalculator scoreCalculator;
+    public DropItemController dropItemController;
+    private int score = 0;
+    [Header("スロー機能")]
+
+    public float slowTimeScale = 0.3f;
+
+    public float slowDuration = 1f;
+
+    private bool isSlowActive = false;
+
+    private float originalTimeScale = 1f;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -52,9 +70,21 @@ public class PlayerFlight : MonoBehaviour
             flyButton.SetActive(false);
         if (powerGaugePanel != null)
             powerGaugePanel.SetActive(false);
+        if (aimArrow != null)
+        {
+            aimArrow.positionCount = 4;
+            aimArrow.enabled = false;
+        }
+
     }
     void Update()
     {
+        UpdateAimArrow();
+        // 飛行中にZキーを押したらスローを試す
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            UseSlowItem();
+        }
         if (!canAim) return;
         if (!angleLocked)
         {
@@ -74,29 +104,6 @@ public class PlayerFlight : MonoBehaviour
 
             transform.rotation =
                 Quaternion.Euler(0f, 0f, angle);
-            if (aimArrow != null && !launched && !landed)
-            {
-                Vector3 start = transform.position;
-                float radians = angle * Mathf.Deg2Rad;
-                Vector3 direction = new Vector3(
-                    Mathf.Cos(radians),
-                    Mathf.Sin(radians),
-                    0f
-                );
-                Vector3 tip = start + direction * arrowLength;
-                Vector3 left = tip -
-                    Quaternion.Euler(0f, 0f, arrowHeadAngle)
-                    * direction * arrowHeadLength;
-                Vector3 right = tip -
-                    Quaternion.Euler(0f, 0f, -arrowHeadAngle)
-                    * direction * arrowHeadLength;
-                aimArrow.positionCount = 5;
-                aimArrow.SetPosition(0, start);
-                aimArrow.SetPosition(1, tip);
-                aimArrow.SetPosition(2, left);
-                aimArrow.SetPosition(3, tip);
-                aimArrow.SetPosition(4, right);
-            }
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -137,10 +144,48 @@ public class PlayerFlight : MonoBehaviour
                 selectionMenu.HideReturnButton();
         }
     }
+    void UpdateAimArrow()
+    {
+        if (aimArrow == null) return;
+        if (!canAim || launched )
+        {
+            aimArrow.enabled = false;
+            return;
+        }
+        aimArrow.enabled = true;
+        Vector3 start = transform.position;
+        float radians = angle * Mathf.Deg2Rad;
+        Vector2 direction = new Vector2(
+            Mathf.Cos(radians),
+            Mathf.Sin(radians)
+        );
+        Vector3 tip = start + (Vector3)(direction * arrowLength);
+        float leftAngle = (angle + 180f - arrowHeadAngle)
+            * Mathf.Deg2Rad;
+        float rightAngle = (angle + 180f + arrowHeadAngle)
+            * Mathf.Deg2Rad;
+        Vector3 left = tip + new Vector3(
+            Mathf.Cos(leftAngle),
+            Mathf.Sin(leftAngle),
+            0f
+        ) * arrowHeadLength;
+        Vector3 right = tip + new Vector3(
+            Mathf.Cos(rightAngle),
+            Mathf.Sin(rightAngle),
+            0f
+        ) * arrowHeadLength;
+        aimArrow.positionCount = 4;
+        aimArrow.SetPosition(0, start);
+        aimArrow.SetPosition(1, tip);
+        aimArrow.SetPosition(2, left);
+        aimArrow.SetPosition(3, tip);
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (!launched) return;
+        Debug.Log("衝突相手：" + collision.gameObject.name
+   + " / Tag：" + collision.gameObject.tag);
         // 惑星以外との衝突は無視
         if (!collision.gameObject.CompareTag("Earth") &&
             !collision.gameObject.CompareTag("Planet"))
@@ -153,11 +198,58 @@ public class PlayerFlight : MonoBehaviour
             ReturnToLaunch();
             return;
         }
+    
         // 新しい惑星への着地成功
         currentPlanet = collision.gameObject;
         launched = false;
         landed = true;
         angleLocked = false;
+        // 地球以外の惑星に着地したとき、注文を判定する
+
+        if (!collision.gameObject.CompareTag("Earth"))
+        {
+            bool success = false;
+            string resultMessage = "配達失敗！";
+            // DropItemControllerからインベントリを取得する
+            DeliveryInventory inventory =
+               dropItemController != null
+                    ? dropItemController.inventory
+                    : null;
+            if (scoreCalculator != null &&
+                planetOrderManager != null &&
+                inventory != null)
+            {
+                success = scoreCalculator.TryScoreLanding(
+                    currentPlanet.transform,
+                    planetOrderManager,
+                    inventory,
+                    out resultMessage
+
+                );
+            }
+            else
+            {
+                Debug.LogWarning(
+                    "Score Calculator、Planet Order Manager、" +
+                    "Inventoryの設定を確認してください"
+                );
+
+            }
+
+            // 成功・失敗メッセージを表示
+            if (successText != null)
+            {
+                successText.text = resultMessage;
+                successText.gameObject.SetActive(true);
+            }
+            if (dropItemController != null)
+            {
+                dropItemController.FinishDelivery(success);
+            }
+
+        }
+
+
         // 今回着地した場所を次のリセット地点にする
         startPosition = transform.position;
         checkpointRotation = transform.rotation;
@@ -175,6 +267,8 @@ public class PlayerFlight : MonoBehaviour
         // 地球に着地したときだけ画面を戻す
         if (collision.gameObject.CompareTag("Earth"))
         {
+            selectionMenu.ResetPlanetOrdersOnEarthLanding();
+            Debug.Log("地球に着地！地球画面に戻します");
             launched = false;
             landed = true;
             angleLocked = false;
@@ -191,6 +285,7 @@ public class PlayerFlight : MonoBehaviour
                 selectionMenu.ReturnToEarthScreen();
             return;
         }
+  
     }
 
     void LateUpdate()
@@ -270,4 +365,75 @@ public class PlayerFlight : MonoBehaviour
         }
         packageDropped = true;
     }
-}
+    void UpdateScoreText()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = "スコア：" + score + "点";
+        }
+
+    }
+        // Zキーで野菜を1個食べてスローにする
+
+        void UseSlowItem()
+
+        {
+
+            // 飛行中でなければ使えない
+
+            if (!launched || isSlowActive)
+
+                return;
+
+            // インベントリを取得
+
+            DeliveryInventory inventory =
+
+                dropItemController != null
+
+                    ? dropItemController.inventory
+
+                    : null;
+
+            if (inventory == null)
+
+            {
+
+                Debug.LogWarning("DeliveryInventoryが設定されていません！");
+
+                return;
+
+            }
+
+            // 野菜を1個消費できたときだけスローにする
+
+            if (!inventory.TryConsumeOneForSlow())
+
+                return;
+
+            StartCoroutine(SlowTimeCoroutine());
+
+        }
+
+        // 1秒間スローにする
+
+        System.Collections.IEnumerator SlowTimeCoroutine()
+
+        {
+
+            isSlowActive = true;
+
+            originalTimeScale = Time.timeScale;
+
+            Time.timeScale = slowTimeScale;
+
+            yield return new WaitForSecondsRealtime(slowDuration);
+
+            Time.timeScale = originalTimeScale;
+
+            isSlowActive = false;
+
+        }
+
+
+    }
