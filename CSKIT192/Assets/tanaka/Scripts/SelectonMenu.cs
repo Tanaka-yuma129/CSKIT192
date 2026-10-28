@@ -17,6 +17,8 @@ public class SelectionMenu : MonoBehaviour
     public PlayerFlight playerFlight;
     public GameObject earthBackground;
     public GameObject flightBackground;
+    public PlanetOrderManager planetOrderManager;
+
 
     public bool IsFlightScreen { get; private set; }
     void Start()
@@ -57,8 +59,14 @@ public class SelectionMenu : MonoBehaviour
         if (flightBackground != null)
             flightBackground.SetActive(false);
 
-
-
+    }
+    // 地球に着地したときだけ注文をリセットする
+    public void ResetPlanetOrdersOnEarthLanding()
+    {
+        if (planetOrderManager != null)
+        {
+            planetOrderManager.RandomizeAllOrders();
+        }
     }
     // 飛行画面
     public void ShowFlight()
@@ -159,6 +167,7 @@ public class SelectionMenu : MonoBehaviour
     // 地球画面に戻る
     public void ReturnToEarthScreen()
     {
+   
         ShowSelection();
         if (deliveryItemPanel != null)
             deliveryItemPanel.SetActive(false);

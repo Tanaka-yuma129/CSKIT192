@@ -9,6 +9,27 @@ public class CameraFollow : MonoBehaviour
     public Transform backgroundRoot;
     private Vector3 startPosition;
     private Camera cam;
+    [Header("マウスホイールでズーム")]
+    public float zoomSpeed = 2f;
+    public float minZoom = 3f;
+    public float maxZoom = 15f;
+    void Update()
+    {
+        float scroll = Input.mouseScrollDelta.y;
+        if (scroll == 0f)
+            return;
+        Camera cam = GetComponent<Camera>();
+        if (cam == null)
+           return;
+        cam.orthographicSize -= scroll * zoomSpeed;
+        cam.orthographicSize = Mathf.Clamp(
+           cam.orthographicSize,
+            minZoom,
+            maxZoom
+        );
+
+    }
+
     void Start()
     {
         startPosition = transform.position;

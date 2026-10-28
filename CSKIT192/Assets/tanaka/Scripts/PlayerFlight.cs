@@ -21,6 +21,8 @@ public class PlayerFlight : MonoBehaviour
     public GameObject powerGaugePanel;
     public GameObject packagePrefab;
     public SelectionMenu selectionMenu;
+    public PlanetOrderManager planetOrderManager;
+
 
     private bool packageDropped = false;
 
@@ -38,8 +40,20 @@ public class PlayerFlight : MonoBehaviour
     private Quaternion checkpointRotation;
     private GameObject currentPlanet;
     public TMP_Text scoreText;
-    public int scorePerLanding = 100;
+    public DeliveryScoreCalculator scoreCalculator;
+    public DropItemController dropItemController;
     private int score = 0;
+    [Header("スロー機能")]
+
+    public float slowTimeScale = 0.3f;
+
+    public float slowDuration = 1f;
+
+    private bool isSlowActive = false;
+
+    private float originalTimeScale = 1f;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -66,6 +80,11 @@ public class PlayerFlight : MonoBehaviour
     void Update()
     {
         UpdateAimArrow();
+        // 飛行中にZキーを押したらスローを試す
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            UseSlowItem();
+        }
         if (!canAim) return;
         if (!angleLocked)
         {
@@ -185,6 +204,52 @@ public class PlayerFlight : MonoBehaviour
         launched = false;
         landed = true;
         angleLocked = false;
+        // 地球以外の惑星に着地したとき、注文を判定する
+
+        if (!collision.gameObject.CompareTag("Earth"))
+        {
+            bool success = false;
+            string resultMessage = "配達失敗！";
+            // DropItemControllerからインベントリを取得する
+            DeliveryInventory inventory =
+               dropItemController != null
+                    ? dropItemController.inventory
+                    : null;
+            if (scoreCalculator != null &&
+                planetOrderManager != null &&
+                inventory != null)
+            {
+                success = scoreCalculator.TryScoreLanding(
+                    currentPlanet.transform,
+                    planetOrderManager,
+                    inventory,
+                    out resultMessage
+
+                );
+            }
+            else
+            {
+                Debug.LogWarning(
+                    "Score Calculator、Planet Order Manager、" +
+                    "Inventoryの設定を確認してください"
+                );
+
+            }
+
+            // 成功・失敗メッセージを表示
+            if (successText != null)
+            {
+                successText.text = resultMessage;
+                successText.gameObject.SetActive(true);
+            }
+            if (dropItemController != null)
+            {
+                dropItemController.FinishDelivery(success);
+            }
+
+        }
+
+
         // 今回着地した場所を次のリセット地点にする
         startPosition = transform.position;
         checkpointRotation = transform.rotation;
@@ -202,7 +267,7 @@ public class PlayerFlight : MonoBehaviour
         // 地球に着地したときだけ画面を戻す
         if (collision.gameObject.CompareTag("Earth"))
         {
-
+            selectionMenu.ResetPlanetOrdersOnEarthLanding();
             Debug.Log("地球に着地！地球画面に戻します");
             launched = false;
             landed = true;
@@ -308,5 +373,67 @@ public class PlayerFlight : MonoBehaviour
         }
 
     }
+        // Zキーで野菜を1個食べてスローにする
 
-}
+        void UseSlowItem()
+
+        {
+
+            // 飛行中でなければ使えない
+
+            if (!launched || isSlowActive)
+
+                return;
+
+            // インベントリを取得
+
+            DeliveryInventory inventory =
+
+                dropItemController != null
+
+                    ? dropItemController.inventory
+
+                    : null;
+
+            if (inventory == null)
+
+            {
+
+                Debug.LogWarning("DeliveryInventoryが設定されていません！");
+
+                return;
+
+            }
+
+            // 野菜を1個消費できたときだけスローにする
+
+            if (!inventory.TryConsumeOneForSlow())
+
+                return;
+
+            StartCoroutine(SlowTimeCoroutine());
+
+        }
+
+        // 1秒間スローにする
+
+        System.Collections.IEnumerator SlowTimeCoroutine()
+
+        {
+
+            isSlowActive = true;
+
+            originalTimeScale = Time.timeScale;
+
+            Time.timeScale = slowTimeScale;
+
+            yield return new WaitForSecondsRealtime(slowDuration);
+
+            Time.timeScale = originalTimeScale;
+
+            isSlowActive = false;
+
+        }
+
+
+    }
