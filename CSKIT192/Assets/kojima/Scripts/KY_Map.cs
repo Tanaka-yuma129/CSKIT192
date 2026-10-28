@@ -32,11 +32,15 @@ public class KY_Map : MonoBehaviour
         //マップのフラグをオンにする
         isInMap = true;
 
+       
         if (mapRootObject != null)
+         {
             //MainSceneの更新や描画を一時的に停止する
             mapRootObject.SetActive(false);
-            //MapSceneを追加ロード
+            ////MapSceneを追加ロード
             SceneManager.LoadScene("MapScene", LoadSceneMode.Additive);
+          }
+
         Debug.Log("戦闘シーンを読み込みました（Mキー）");
     }
 
