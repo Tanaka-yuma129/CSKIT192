@@ -232,6 +232,35 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 601032987317698508, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
   m_PrefabInstance: {fileID: 2014283636}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &148211856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148211851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 519420033}
+          m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 96cb7d45ade8b6b43bbb1e350a58360c, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &207401050
 GameObject:
   m_ObjectHideFlags: 0
@@ -547,6 +576,35 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3459642441550141563, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
   m_PrefabInstance: {fileID: 2014283636}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &382814900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382814895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 519420033}
+          m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 96cb7d45ade8b6b43bbb1e350a58360c, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &394828421
 GameObject:
   m_ObjectHideFlags: 0
@@ -1141,6 +1199,10 @@ MonoBehaviour:
   playerFlight: {fileID: 1876041109}
   smoothSpeed: 5
   offset: {x: 0, y: 0, z: -10}
+  backgroundRoot: {fileID: 0}
+  zoomSpeed: 2
+  minZoom: 3
+  maxZoom: 15
 --- !u!114 &519420036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1155,6 +1217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 10
   selectionMenu: {fileID: 1226971676}
+  backgroundRoot: {fileID: 0}
 --- !u!1 &524981072
 GameObject:
   m_ObjectHideFlags: 0
@@ -1517,6 +1580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0acb79233fc15164db8f759c98adfd6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fallLimitY: -15
 --- !u!1 &798272032
 GameObject:
   m_ObjectHideFlags: 0
@@ -1548,6 +1612,7 @@ Transform:
   m_Children:
   - {fileID: 519420032}
   - {fileID: 619394802}
+  - {fileID: 912455261}
   - {fileID: 211819772}
   - {fileID: 1874170633}
   - {fileID: 1893973856}
@@ -1909,12 +1974,19 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2623307794622998264, guid: 6e4a0a719d3d30e47aaa98b215c14c88, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 57cb6d8de760b61408aa1f70a600a91c, type: 2}
+    - target: {fileID: 2623307794622998264, guid: 6e4a0a719d3d30e47aaa98b215c14c88, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e4a0a719d3d30e47aaa98b215c14c88, type: 3}
-<<<<<<< HEAD
 --- !u!1001 &912455260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1997,8 +2069,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6558487953037905038, guid: 8f6648c35203ba146b99d645c4c7a582, type: 3}
   m_PrefabInstance: {fileID: 912455260}
   m_PrefabAsset: {fileID: 0}
-=======
->>>>>>> 8912da44b27f69f8d6f0de896f8052d5f61c336f
 --- !u!1 &927726680 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3561297872620153742, guid: 1cd7be68d1860c44cbfea90378852857, type: 3}
@@ -2396,6 +2466,9 @@ MonoBehaviour:
   flyButton: {fileID: 1695695478}
   selectedItemTextObject: {fileID: 0}
   playerFlight: {fileID: 1876041109}
+  earthBackground: {fileID: 0}
+  flightBackground: {fileID: 0}
+  planetOrderManager: {fileID: 0}
 --- !u!1 &1232909938 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2946319053108093430, guid: 93047d7c950ca3e4e973d4ddfc1b972a, type: 3}
@@ -2987,6 +3060,35 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 620303206068346646, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
   m_PrefabInstance: {fileID: 2014283636}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1695695480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1695695478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 2
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 519420033}
+          m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_MethodName: PlayOneShot
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 8300000, guid: 96cb7d45ade8b6b43bbb1e350a58360c, type: 3}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &1803857129
 GameObject:
   m_ObjectHideFlags: 0
@@ -3196,6 +3298,12 @@ MonoBehaviour:
   powerGaugePanel: {fileID: 1320417446}
   packagePrefab: {fileID: 777424654}
   selectionMenu: {fileID: 0}
+  planetOrderManager: {fileID: 0}
+  scoreText: {fileID: 0}
+  scoreCalculator: {fileID: 0}
+  dropItemController: {fileID: 0}
+  slowTimeScale: 0.3
+  slowDuration: 1
 --- !u!1001 &1893973855
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3517,7 +3625,7 @@ MonoBehaviour:
   m_text: "\u6642\u9593\u8868\u793A\u90E8\u5206"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 57cb6d8de760b61408aa1f70a600a91c, type: 2}
-  m_sharedMaterial: {fileID: -420899925614795170, guid: 57cb6d8de760b61408aa1f70a600a91c, type: 2}
+  m_sharedMaterial: {fileID: -8311419287918551475, guid: 57cb6d8de760b61408aa1f70a600a91c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3626,7 +3734,7 @@ PrefabInstance:
     - target: {fileID: 796407232745475385, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: -420899925614795170, guid: 57cb6d8de760b61408aa1f70a600a91c, type: 2}
+      objectReference: {fileID: -8311419287918551475, guid: 57cb6d8de760b61408aa1f70a600a91c, type: 2}
     - target: {fileID: 796407232745475385, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 0
@@ -3752,7 +3860,7 @@ PrefabInstance:
     - target: {fileID: 5263241598989278524, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: -420899925614795170, guid: 57cb6d8de760b61408aa1f70a600a91c, type: 2}
+      objectReference: {fileID: -8311419287918551475, guid: 57cb6d8de760b61408aa1f70a600a91c, type: 2}
     - target: {fileID: 5263241598989278524, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
       propertyPath: m_hasFontAssetChanged
       value: 0
@@ -3761,6 +3869,15 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 620303206068346646, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1695695480}
+    - targetCorrespondingSourceObject: {fileID: 3459642441550141563, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 382814900}
+    - targetCorrespondingSourceObject: {fileID: 601032987317698508, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 148211856}
     - targetCorrespondingSourceObject: {fileID: 1611701244436789029, guid: f500b4885afe26245bf5302184d8d1e2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 777424660}

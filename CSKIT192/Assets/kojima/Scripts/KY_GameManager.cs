@@ -6,8 +6,9 @@ public class KY_GameManager : MonoBehaviour
     public static KY_GameManager Instance {  get; private set; }
 
     //持ち越したいデータ
-    public float gametime = 120f; //制限時間
-    public int tip = 0;           //スコア
+    public float gametime = 120f;            //制限時間
+    public int tip = 0;                      //スコア
+    public float evaluation = 5.0f;          //評価
 
     void Awake()
     {
@@ -37,5 +38,13 @@ public class KY_GameManager : MonoBehaviour
     public void AddTip(int points)
     {
         tip += points;
+    }
+
+    //評価を変更させる関数
+    public void ChangeEvaluation(float amount)
+    {
+        evaluation += amount;
+
+        evaluation = Mathf.Clamp(evaluation, 0.0f, 5.0f);
     }
 }
