@@ -26,7 +26,7 @@ public class KY_GameTimer : MonoBehaviour
         if (gametimer <= 0)
         {
             gametimer = 0;
-            SceneManager.LoadScene("ResultScene"); //シーン指定:ResultScene
+            SceneManager.LoadScene("ゲーム終了画面"); //シーン指定:ResultScene
         }
 
         int minutes = Mathf.FloorToInt(gametimer / 60f);

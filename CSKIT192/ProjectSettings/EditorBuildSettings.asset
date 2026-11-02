@@ -23,6 +23,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/kojima/Scenes/MapScene.unity
     guid: a40618109fdc4134b99ff2d3eb8fde78
+  - enabled: 1
+    path: Assets/kojima/Scenes/T_MainScene.unity
+    guid: 5e813d97300574547a45e7257804f1ef
+  - enabled: 1
+    path: "Assets/iwakura/\u30B2\u30FC\u30E0\u7D42\u4E86\u753B\u9762.unity"
+    guid: 4158fddac8311f24cb9e17fedec556be
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
