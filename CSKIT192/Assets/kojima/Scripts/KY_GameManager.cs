@@ -6,7 +6,7 @@ public class KY_GameManager : MonoBehaviour
     public static KY_GameManager Instance {  get; private set; }
 
     //持ち越したいデータ
-    public float gametime = 120f;            //制限時間
+    [SerializeField] public float gametime = 120f;            //制限時間
     public int tip = 0;                      //スコア
     public float evaluation = 5.0f;          //評価
 

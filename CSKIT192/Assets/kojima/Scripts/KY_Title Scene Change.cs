@@ -34,6 +34,6 @@ public class KY_TitleSceneChange : MonoBehaviour
 
         yield return new WaitForSeconds(SEtime);
 
-        SceneManager.LoadScene("T_MainScene"); //シーン指定:MainScene
+        SceneManager.LoadScene("MapSelectScene"); //シーン指定:MainScene
     }
 }

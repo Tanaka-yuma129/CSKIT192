@@ -659,13 +659,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 394828421}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4dcfab5938b1f044fb9746d0a6f2c32f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   gametime: 120
   tip: 0
+  evaluation: 5
 --- !u!1 &424755493 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9031366454199795626, guid: e7d8345ba3dad3a448a9e9c563865eaf, type: 3}
