@@ -68,6 +68,7 @@ public class DeliveryScoreCalculator : MonoBehaviour
         {
             scoreText.text = "合計スコア：" + totalScore;
         }
+        KY_GameManager.Instance.gametime += 10f; //着地成功時、10秒追加
         message =
             "配達成功！\n" +
             itemName + "を" + requiredCount +
